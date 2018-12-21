@@ -86,13 +86,16 @@ router.post('/login', (req,res,next) =>{
 
 //editName
 router.put('/user/editName/:id', verifyToken, (req,res,next) => {
+    //validate for invalid names like special char
     User.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName
     }).then(update =>{
-        res.json(update)
+        return res.json(update)
     }).catch(err => {
-        res.status(500).json(err)
+        res.status(500).json({
+            message: "Invalid user"
+        })
     })
 })
 
@@ -101,10 +104,11 @@ router.get('/getDetails/:id', verifyToken, (req, res, next) => {
     User.findById(req.params.id)
     .exec()
     .then((err, userDet)=>{
+        console.log(userDet)
         if (err){
             res.send(err)
         }
-        return res.status(200).json(userDet)
+        return res.status(200).json(userDet) 
     })
     .catch(err => {
         console.log(err)
