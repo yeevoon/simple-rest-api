@@ -49,12 +49,12 @@ router.post('/login', (req,res,next) =>{
     User.find({ email: req.body.email})
     .exec()
     .then(user =>{
-        if(!req.body.email){
-            return res.status(401).send('Auth Failed')
-        }
+        if(user.length < 1){
+            return res.status(401).send('Authentication Failed')
+        } 
         bcrypt.compare(req.body.password, user[0].password, (err, result)=>{
             if (err){
-                return res.status(401).send('Auth Failed')
+                return res.status(401).send('Authentication Failed')
             }
             if (result){
                 const token = jwt.sign(
@@ -71,9 +71,12 @@ router.post('/login', (req,res,next) =>{
                     message: "Authentication Successful!",
                     token: token
                 }) 
-            }
+            } 
+            res.status(401).send('Authentication Failed')
+            
         }
-        )
+        )            
+
     })
     .catch(err => {
         console.log(err)
