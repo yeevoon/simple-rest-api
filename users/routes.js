@@ -4,8 +4,14 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
+const {check, validation} = require('express-validator/check');
+
 
 const User = require("./models/user.models");
+const signupValidation = require("../lib/signup-validation");
+const editNameValidation = require("../lib/editName-validation");
+const errorMsg = require("../lib/messages").error;
+const successMsg = require("../lib/messages").success;
 
 
 router.post('/test', (req, res, next) => {
@@ -15,28 +21,29 @@ router.post('/test', (req, res, next) => {
 });
 
 //Signup
-router.post('/signup', (req,res) =>{
-    //console.log(req.body)
-    
-    if (!req.body){
-        res.status(500).send("Request body missing")
-    }
-    else{
+router.post('/signup', signupValidation, (req,res) =>{
+    var errors = req.validationErrors();
+    if (errors){
+        return res.send(errors);
+    } else{
         const user = new User(req.body)
-        console.log('Successful signup!')
+        //console.log('Successful signup!')
         user.save()
         .then(result => {
             if (!result || result.length === 0){
-                return res.status(500).send(result)
+                return res.status(500).json(errorMsg.internal)
             }
             console.log('result: ' + result);
-            res.status(201).send({id: result._id});
+            res.status(201).json(successMsg.signup_successful)
         })
         .catch(err => {
             console.log(err)
-            res.status(500).json(err)
+            res.status(500).json(errorMsg.internal); //when request body is empty 
         })
+       // .then(user => res.json(user))        
     }
+
+
     
     /*
     res.status(201).json({
@@ -50,11 +57,11 @@ router.post('/login', (req,res,next) =>{
     .exec()
     .then(user =>{
         if(user.length < 1){
-            return res.status(401).send('Authentication Failed')
+            return res.status(401).json(errorMsg.login_failed); //wrong email
         } 
         bcrypt.compare(req.body.password, user[0].password, (err, result)=>{
             if (err){
-                return res.status(401).send('Authentication Failed')
+                return res.status(401).json(errorMsg.login_failed); //wrong password
             }
             if (result){
                 const token = jwt.sign(
@@ -67,35 +74,29 @@ router.post('/login', (req,res,next) =>{
                         expiresIn: "1h"
                     }
                 );
-                return res.status(200).json({
-                    message: "Authentication Successful!",
-                    token: token
-                }) 
+                return res.status(200).json({token: token}) 
             } 
-            res.status(401).send('Authentication Failed')
-            
-        }
+            return res.status(401).json(errorMsg.login_failed);    
+            }
         )            
-
     })
     .catch(err => {
         console.log(err)
-        res.status(500).json(err)
+        res.status(500).json(errorMsg.internal);
     })
 })
 
 //editName
-router.put('/user/editName/:id', verifyToken, (req,res,next) => {
-    //validate for invalid names like special char
+router.put('/user/editName/:id', editNameValidation, verifyToken, (req,res,next) => {
     User.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
-        lastName: req.body.lastName
+        lastName: req.body.lastName,
+        runValidators: true
     }).then(update =>{
-        return res.json(update)
+        console.log(update)
+        return res.json(successMsg.update_successful)
     }).catch(err => {
-        res.status(500).json({
-            message: "Invalid user"
-        })
+        res.status(500).json(errorMsg.user_not_found)
     })
 })
 
@@ -103,16 +104,18 @@ router.put('/user/editName/:id', verifyToken, (req,res,next) => {
 router.get('/getDetails/:id', verifyToken, (req, res, next) => {
     User.findById(req.params.id)
     .exec()
-    .then((err, userDet)=>{
-        console.log(userDet)
-        if (err){
-            res.send(err)
-        }
-        return res.status(200).json(userDet) 
+    .then(result =>{
+        console.log(result)
+        return res.status(200).json({
+            firstName: result.firstName,
+            lastName: result.lastName,
+            email: result.email,
+            dob: result.dob
+        });
     })
     .catch(err => {
         console.log(err)
-        res.status(500).json(err)
+        res.status(500).json(errorMsg.internal);
     })
 
 })
@@ -121,12 +124,11 @@ function verifyToken(req, res, next) {
     const header = req.headers.authorization;
     if (typeof header !== 'undefined'){
         const token = header.split(" ")[1]
-        console.log(token)
+        //console.log(token)
         const decoded = jwt.verify(token, 'secret');
     } else {
-        return res.sendStatus(403)
+        return res.status(500).json(errorMsg.internal);
     }
-    
     next();
 }
 
