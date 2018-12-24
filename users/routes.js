@@ -6,13 +6,11 @@ const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 const {check, validation} = require('express-validator/check');
 
-
 const User = require("./models/user.models");
 const signupValidation = require("../lib/signup-validation");
 const editNameValidation = require("../lib/editName-validation");
 const errorMsg = require("../lib/messages").error;
 const successMsg = require("../lib/messages").success;
-
 
 router.post('/test', (req, res, next) => {
     res.status(200).json({
@@ -42,13 +40,6 @@ router.post('/signup', signupValidation, (req,res) =>{
         })
        // .then(user => res.json(user))        
     }
-
-
-    
-    /*
-    res.status(201).json({
-        message: 'New user sign up.'
-    });*/
 });
 
 //user login
@@ -84,10 +75,11 @@ router.post('/login', (req,res,next) =>{
         console.log(err)
         res.status(500).json(errorMsg.internal);
     })
-})
+});
 
 //editName
 router.put('/user/editName/:id', editNameValidation, verifyToken, (req,res,next) => {
+    console.log("update user")
     User.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -98,7 +90,8 @@ router.put('/user/editName/:id', editNameValidation, verifyToken, (req,res,next)
     }).catch(err => {
         res.status(500).json(errorMsg.user_not_found)
     })
-})
+    //}
+});
 
 //getDetails
 router.get('/getDetails/:id', verifyToken, (req, res, next) => {
