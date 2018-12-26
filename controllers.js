@@ -73,6 +73,7 @@ exports.edit_name = (req,res) => {
         console.log(update)
         return res.json(successMsg.update_successful)
     }).catch(err => {
+        console.log(err)
         res.status(500).json(errorMsg.user_not_found)
     })
 };
