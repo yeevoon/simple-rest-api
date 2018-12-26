@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 
-const userRoutes = require('./users/routes');
+const userRoutes = require('./routes');
 
 app.use(userRoutes);
 
