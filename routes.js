@@ -8,7 +8,7 @@ const {check, validation} = require('express-validator/check');
 
 const User = require("./models/user.models");
 const signupValidation = require("../lib/signup-validation");
-const editNameValidation = require("../lib/editName-validation");
+const editNameValidation = require("../lib/edit-name-validation");
 const errorMsg = require("../lib/messages").error;
 const successMsg = require("../lib/messages").success;
 
