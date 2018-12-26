@@ -15,7 +15,7 @@ exports.sign_up = (req,res) => {
             if (!result || result.length === 0){
                 return res.status(500).json(errorMsg.internal)
             }
-            console.log('result: ' + result);
+            console.log(`result: ${result}`);
             res.status(201).json(successMsg.signup_successful)
         })
         .catch(err => {
