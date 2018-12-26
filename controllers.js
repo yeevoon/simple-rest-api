@@ -11,9 +11,10 @@ exports.sign_up = (req,res) => {
     if (errors){
         return res.json(errorMsg.validation_failed);
     } else{
-        const user = new User(req.body)
+        const userDetails = new User(req.body)
         //console.log('Successful signup!')
-        user.save()
+        userDetails.save()
+        .exec()
         .then(result => {
             if (!result || result.length === 0){
                 return res.status(500).json(errorMsg.internal)
@@ -25,7 +26,7 @@ exports.sign_up = (req,res) => {
             console.log(err)
             res.status(500).json(errorMsg.internal); //when request body is empty 
         })
-       // .then(user => res.json(user))        
+       // .then(userDetails => res.json(userDetails))        
     }
 };
 
