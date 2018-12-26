@@ -3,7 +3,7 @@ const errorMsg = require("./lib/messages").error;
 const successMsg = require("./lib/messages").success;
 const jwt = require('jsonwebtoken');
 
-exports.signUp = (req,res) => {
+exports.sign_up = (req,res) => {
     var errors = req.validationErrors();
     if (errors){
         return res.send(errors);
@@ -60,7 +60,7 @@ exports.login = (req,res) =>{
     })
 };
 
-exports.editName = (req,res) => {
+exports.edit_name = (req,res) => {
     User.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -73,7 +73,7 @@ exports.editName = (req,res) => {
     })
 };
 
-exports.getDetails = (req, res) => {
+exports.get_details = (req, res) => {
     User.findById(req.params.id)
     .exec()
     .then(result =>{
@@ -92,7 +92,7 @@ exports.getDetails = (req, res) => {
 
 };
 
-exports.verifyToken = function(req, res, next) {
+exports.verify_token = function(req, res, next) {
     const header = req.headers.authorization;
     if (typeof header !== 'undefined'){
         const token = header.split(" ")[1]
