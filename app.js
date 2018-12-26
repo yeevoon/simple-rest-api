@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const validator = require('express-validator');
 
@@ -14,7 +13,7 @@ const userRoutes = require('./routes');
 
 app.use(userRoutes);
 
-app.use((req, res, next) => {
+app.use((res) => {
     res.status(404).json({
         status_code: 404,
         message: 'Not found'
