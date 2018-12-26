@@ -1,7 +1,10 @@
 const User = require("./models");
 const errorMsg = require("./lib/messages").error;
 const successMsg = require("./lib/messages").success;
+const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
+const secretKey = 'secret'
+const expiration = '1h'
 
 exports.sign_up = (req,res) => {
     var errors = req.validationErrors();
@@ -43,9 +46,9 @@ exports.login = (req,res) =>{
                         userID: user[0]._id,
                         password: user[0].password
                     },
-                    "secret", 
+                    secretKey, 
                     {
-                        expiresIn: "1h"
+                        expiresIn: expiration
                     }
                 );
                 return res.status(200).json({token: token}) 
@@ -97,7 +100,7 @@ exports.verify_token = function(req, res, next) {
     if (typeof header !== 'undefined'){
         const token = header.split(" ")[1]
         //console.log(token)
-        const decoded = jwt.verify(token, 'secret');
+        const decoded = jwt.verify(token, secretKey);
     } else {
         return res.status(500).json(errorMsg.internal);
     }
