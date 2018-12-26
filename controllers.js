@@ -109,7 +109,7 @@ exports.verify_token = function(req, res, next) {
     if (typeof header !== 'undefined'){
         const token = header.split(" ")[1]
         //console.log(token)
-        const decoded = jwt.verify(token, secretKey);
+        jwt.verify(token, secretKey);
     } else {
         return res.status(500).json(errorMsg.internal);
     }
