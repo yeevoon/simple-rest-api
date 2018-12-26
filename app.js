@@ -3,13 +3,14 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const validator = require('express-validator');
+const userRoutes = require('./routes');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 
-const userRoutes = require('./routes');
+
 
 app.use(userRoutes);
 
