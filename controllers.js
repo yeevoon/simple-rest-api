@@ -9,7 +9,7 @@ const expiration = '1h'
 exports.sign_up = (req,res) => {
     var errors = req.validationErrors();
     if (errors){
-        return res.send(errors);
+        return res.json(errorMsg.validation_failed);
     } else{
         const user = new User(req.body)
         //console.log('Successful signup!')
