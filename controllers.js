@@ -30,7 +30,7 @@ exports.sign_up = (req,res) => {
             res.status(201).json(successMsg.signup_successful)
         })
         .catch(err => {
-            console.log(err)
+            console.error(err)
             res.status(500).json(errorMsg.internal); //when request body is empty 
         })
        // .then(userDetails => res.json(userDetails))        
@@ -66,7 +66,7 @@ exports.login = (req,res) =>{
         )            
     })
     .catch(err => {
-        console.log(err)
+        console.error(err)
         res.status(500).json(errorMsg.internal);
     })
 };
@@ -80,7 +80,7 @@ exports.edit_name = (req,res) => {
         console.log(update)
         return res.json(successMsg.update_successful)
     }).catch(err => {
-        console.log(err)
+        console.error(err)
         res.status(500).json(errorMsg.user_not_found)
     })
 };
@@ -98,7 +98,7 @@ exports.get_details = (req, res) => {
         });
     })
     .catch(err => {
-        console.log(err)
+        console.error(err)
         res.status(500).json(errorMsg.internal);
     })
 
