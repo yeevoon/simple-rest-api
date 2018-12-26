@@ -11,12 +11,12 @@ exports.sign_up = (req,res) => {
     if (errors){
         return res.json(errorMsg.validation_failed);
     } else{
-        const userDetails = new Users ({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: req.body.password,
-            dob: req.body.dob
+        const userDetails = new User ({
+            firstName: req.body.f_name,
+            lastName: req.body.l_name,
+            email: req.body.mail,
+            password: req.body.pw,
+            dob: req.body.dateOfBirth
         });
         //console.log('Successful signup!')
         userDetails
