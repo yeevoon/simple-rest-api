@@ -11,7 +11,7 @@ exports.sign_up = (req,res) => {
     if (errors){
         return res.json(errorMsg.validation_failed);
     } else{
-        const userDetails = new User ({
+        const userDetails = new Users ({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
