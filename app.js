@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const validator = require('express-validator');
 const userRoutes = require('./routes');
 const errorMsg = require("./lib/messages").error;
+const port = 5000;
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -17,7 +18,7 @@ app.use((res) => {
     res.status(404).json(errorMsg.webpage_not_found);
 });
 
-app.listen(5000,() =>{
+app.listen(port,() =>{
     console.log("Server running on port 5000");
 })
 
